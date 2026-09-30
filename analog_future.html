@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analog Future</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #c0c0c0;
+  color: #000;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.window {
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  box-shadow: 1px 1px 0 #ffffff inset, 1px 1px 0 #808080;
+  width: 100%;
+  max-width: 800px;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+}
+
+.title-bar {
+  background: linear-gradient(to right, #000080, #1084d7);
+  color: white;
+  padding: 2px 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  user-select: none;
+}
+
+.title-text {
+  padding: 2px 4px;
+  flex: 1;
+}
+
+.window-buttons {
+  display: flex;
+  gap: 2px;
+  padding-right: 2px;
+}
+
+.window-btn {
+  width: 16px;
+  height: 14px;
+  background: #c0c0c0;
+  border: 1px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  cursor: pointer;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  font-weight: bold;
+}
+
+.window-btn:active {
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+}
+
+.menu-bar {
+  display: none;
+}
+
+.menu-item {
+  padding: 2px 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 11px;
+  user-select: none;
+}
+
+.menu-item:hover {
+  border: 1px solid #dfdfdf;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+}
+
+.content-area {
+  flex: 1;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.page {
+  display: none;
+  animation: tubeOut 0.3s ease-in-out;
+}
+
+.page.active {
+  display: flex;
+  animation: tubeIn 0.3s ease-out;
+}
+
+@keyframes tubeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes tubeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes screenFlicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.95; }
+}
+
+.page {
+  animation: screenFlicker 0.15s, tubeOut 0.3s ease-in-out;
+}
+
+.page.active {
+  animation: screenFlicker 0.15s, tubeIn 0.3s ease-out;
+}
+
+/* Home Page */
+.home-page {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+}
+
+#typewriterText {
+  font-size: 36px;
+  font-weight: bold;
+  color: #000000;
+  font-family: "Courier New", monospace;
+  letter-spacing: 2px;
+  min-height: 45px;
+}
+
+#cursor {
+  display: none;
+  color: #000000;
+  font-size: 36px;
+  font-weight: bold;
+  animation: blink 0.7s infinite;
+  margin-left: 2px;
+}
+
+#cursor.visible {
+  display: inline-block;
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Portfolio Page */
+.portfolio-page {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.portfolio-content {
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Contact Page */
+.contact-page {
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.contact-form {
+  width: 100%;
+}
+
+.form-group {
+  margin-bottom: 10px;
+}
+
+label {
+  display: block;
+  margin-bottom: 3px;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 4px;
+  border: 2px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+  background: white;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 11px;
+  color: #000;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+  font-family: "Courier New", monospace;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+button {
+  padding: 4px 12px;
+  background: #c0c0c0;
+  border: 2px solid;
+  border-color: #dfdfdf #808080 #808080 #dfdfdf;
+  cursor: pointer;
+  font-family: "MS Sans Serif", Arial, sans-serif;
+  font-size: 11px;
+  user-select: none;
+}
+
+button:active {
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+}
+
+/* Navigation Knobs */
+.knob-section {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  padding: 20px;
+  border-top: 2px solid;
+  border-color: #808080 #dfdfdf #dfdfdf #808080;
+  background: #c0c0c0;
+}
+
+.knob-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.knob {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #f0f0f0, #808080);
+  border: 3px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.knob::before {
+  content: '';
+  position: absolute;
+  width: 3px;
+  height: 15px;
+  background: #ff6b6b;
+  border-radius: 1px;
+  top: 8px;
+}
+
+.knob.active::before {
+  background: #ff6b6b;
+}
+
+.knob-label {
+  font-size: 11px;
+  font-weight: bold;
+  text-align: center;
+  min-width: 50px;
+  color: #000;
+}
+
+/* Envelope and Pigeon */
+.animation-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.envelope {
+  position: absolute;
+  width: 120px;
+  height: 80px;
+  background: #f5e6d3;
+  border: 1px solid #999;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 10px;
+  transform-style: preserve-3d;
+}
+
+.envelope-flap {
+  width: 120px;
+  height: 40px;
+  background: #e8d7c3;
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  position: absolute;
+  top: 0;
+}
+
+@keyframes envelopeFold {
+  0% {
+    transform: translateX(-50%) rotateX(0deg) scale(1);
+  }
+  100% {
+    transform: translateX(-50%) rotateX(90deg) scale(0.7);
+  }
+}
+
+.envelope.folding {
+  animation: envelopeFold 1.2s ease-in-out forwards;
+}
+
+.pigeon {
+  position: absolute;
+  width: 80px;
+  height: 60px;
+  opacity: 0;
+}
+
+@keyframes pigeonSwoop {
+  0% {
+    left: -100px;
+    top: -100px;
+    opacity: 1;
+  }
+  50% {
+    left: calc(50% - 40px);
+    top: calc(50% - 150px);
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% + 50px);
+    top: -100px;
+    opacity: 1;
+  }
+}
+
+.pigeon.flying {
+  animation: pigeonSwoop 2s ease-in-out forwards;
+  animation-delay: 1.2s;
+}
+</style>
+</head>
+<body>
+
+<div class="animation-layer">
+  <svg class="pigeon" id="pigeon" viewBox="0 0 80 60" xmlns="http://www.w3.org/2000/svg">
+    <!-- Body -->
+    <ellipse cx="40" cy="30" rx="25" ry="18" fill="#888"/>
+    <!-- Head -->
+    <circle cx="60" cy="25" r="12" fill="#888"/>
+    <!-- Eye -->
+    <circle cx="65" cy="23" r="2" fill="#000"/>
+    <!-- Beak -->
+    <path d="M 72 25 L 78 24 L 72 26" fill="#d4a574"/>
+    <!-- Wing -->
+    <path d="M 35 25 Q 20 15 25 35 Q 30 32 35 32" fill="#666" opacity="0.8"/>
+    <!-- Tail -->
+    <path d="M 15 28 Q 5 25 8 35 Q 15 32 15 30" fill="#666"/>
+    <!-- Legs -->
+    <line x1="38" y1="48" x2="38" y2="55" stroke="#d4a574" stroke-width="1.5"/>
+    <line x1="42" y1="48" x2="42" y2="55" stroke="#d4a574" stroke-width="1.5"/>
+  </svg>
+  <div class="envelope" id="envelope"></div>
+</div>
+
+<div class="window">
+  <div class="title-bar">
+    <div class="title-text">Analog Future - Windows Explorer</div>
+    <div class="window-buttons">
+      <div class="window-btn">_</div>
+      <div class="window-btn">☐</div>
+      <div class="window-btn">✕</div>
+    </div>
+  </div>
+
+  <div class="menu-bar">
+    <div class="menu-item">File</div>
+    <div class="menu-item">Edit</div>
+    <div class="menu-item">View</div>
+    <div class="menu-item">Tools</div>
+    <div class="menu-item">Help</div>
+  </div>
+
+  <div class="content-area">
+    <!-- Home Page -->
+    <div class="page home-page active" data-page="home">
+      <div class="hero">
+        <div id="typewriterText"></div>
+        <span id="cursor">_</span>
+      </div>
+    </div>
+
+    <!-- Portfolio Page -->
+    <div class="page portfolio-page" data-page="portfolio">
+      <div class="portfolio-content">
+        <h2>Portfolio</h2>
+        <p style="margin-top: 20px; font-size: 14px;">Coming soon...</p>
+      </div>
+    </div>
+
+    <!-- Contact Page -->
+    <div class="page contact-page" data-page="contact">
+      <h2 style="margin-bottom: 15px;">Send us an inquiry</h2>
+      <form class="contact-form" id="contactForm">
+        <div class="form-group">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="message">Message:</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <div class="button-group">
+          <button type="submit">Send</button>
+          <button type="reset">Clear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="knob-section">
+    <div class="knob-wrapper">
+      <div class="knob active" data-page="home"></div>
+      <div class="knob-label">Home</div>
+    </div>
+    <div class="knob-wrapper">
+      <div class="knob" data-page="portfolio"></div>
+      <div class="knob-label">Portfolio</div>
+    </div>
+    <div class="knob-wrapper">
+      <div class="knob" data-page="contact"></div>
+      <div class="knob-label">Contact</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Typewriter Effect
+function runTypewriter() {
+  const textEl = document.getElementById("typewriterText");
+  const cursor = document.getElementById("cursor");
+  let allText = "";
+
+  function typeChar(char, callback) {
+    allText += char;
+    textEl.textContent = allText;
+    setTimeout(callback, 80);
+  }
+
+  function deleteChar(callback) {
+    allText = allText.slice(0, -1);
+    textEl.textContent = allText;
+    setTimeout(callback, 60);
+  }
+
+  function typeWord(word, callback) {
+    if (word.length === 0) {
+      callback();
+      return;
+    }
+    typeChar(word[0], () => {
+      typeWord(word.slice(1), callback);
+    });
+  }
+
+  function deleteWord(callback) {
+    if (allText.length === 0) {
+      callback();
+      return;
+    }
+    deleteChar(() => {
+      deleteWord(callback);
+    });
+  }
+
+  typeWord("Digital Media", () => {
+    setTimeout(() => {
+      deleteWord(() => {
+        setTimeout(() => {
+          typeWord("ANALOG FUTURE", () => {
+            cursor.classList.add("visible");
+          });
+        }, 400);
+      });
+    }, 800);
+  });
+}
+
+// Knob Navigation
+let currentPage = 'home';
+let isAnimating = false;
+
+document.querySelectorAll('.knob').forEach(knob => {
+  knob.addEventListener('click', function(e) {
+    if (isAnimating) return;
+
+    const page = this.dataset.page;
+    if (page === currentPage) return;
+
+    isAnimating = true;
+
+    // Hide current page
+    document.querySelector(`.page[data-page="${currentPage}"]`).classList.remove('active');
+
+    // Update knob states
+    document.querySelectorAll('.knob').forEach(k => {
+      if (k.dataset.page === currentPage) {
+        k.style.transform = 'rotate(0deg)';
+      }
+    });
+
+    // Show new page
+    setTimeout(() => {
+      document.querySelector(`.page[data-page="${page}"]`).classList.add('active');
+
+      // Rotate active knob
+      this.style.transform = 'rotate(90deg)';
+      this.classList.add('active');
+
+      currentPage = page;
+      isAnimating = false;
+
+      if (page === 'home') {
+        runTypewriter();
+      }
+    }, 150);
+  });
+});
+
+// Form Submission
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  if (isAnimating) return;
+  isAnimating = true;
+
+  const envelope = document.getElementById('envelope');
+  const pigeon = document.getElementById('pigeon');
+
+  envelope.classList.add('folding');
+  pigeon.classList.add('flying');
+
+  setTimeout(() => {
+    document.getElementById('contactForm').reset();
+    envelope.classList.remove('folding');
+    pigeon.classList.remove('flying');
+    isAnimating = false;
+  }, 3500);
+});
+
+// Initialize
+runTypewriter();
+</script>
+
+</body>
+</html>
