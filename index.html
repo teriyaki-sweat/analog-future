@@ -348,6 +348,8 @@ button:active {
   align-items: center;
   padding-top: 10px;
   transform-style: preserve-3d;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .envelope-flap {
@@ -361,15 +363,18 @@ button:active {
 
 @keyframes envelopeFold {
   0% {
+    opacity: 1;
     transform: translateX(-50%) rotateX(0deg) scale(1);
   }
   100% {
+    opacity: 1;
     transform: translateX(-50%) rotateX(90deg) scale(0.7);
   }
 }
 
 .envelope.folding {
   animation: envelopeFold 1.2s ease-in-out forwards;
+  opacity: 1;
 }
 
 .pigeon {
